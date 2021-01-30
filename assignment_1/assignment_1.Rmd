@@ -9,4 +9,44 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+require(stats)
 ```
+
+# Question 1
+
+## a)
+
+Test for independence in a 2-way contingency table with Yate's Continuity correction. 
+
+## b) 
+
+## c)
+
+## d)
+
+```{r}
+
+rm(list = ls())
+
+# setting up the table and helper variables.
+O <- as.table(rbind(c(688, 650),c(21, 59)))
+dimnames(O) <- list(smokers = c("Smokers", "Nonsmokers"), lung_cancer=c("Cancer", "Control"))
+#O
+
+n<-sum(O)
+row_n <- rowSums(O)
+col_n <- colSums(O)
+
+#Expected cell Counts
+
+E <- outer(row_n,col_n)/n
+
+X2 <- sum((O-E)^2/E)
+df <- (nrow(O)-1)*(ncol(O)-1)
+p <- 1 - pchisq(X2,df = df)
+chisq.test(O)
+```
+
+## e)
+
+
