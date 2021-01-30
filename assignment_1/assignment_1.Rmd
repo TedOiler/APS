@@ -10,6 +10,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 require(stats)
+require(roperators)
 ```
 
 # Question 1
@@ -28,23 +29,41 @@ Test for independence in a 2-way contingency table with Yate's Continuity correc
 
 rm(list = ls())
 
+report_results <- function(diff_check=diff, p_value=p_auto, p_value_manual=p_manual, sig_lvl=alpha){
+  
+  if(diff_check == 0){
+  cat('\nReject the null hypothesis under the 5% significance level'%s*%(p_value<sig_lvl))
+  cat('\nNo evidence to reject the null hypothesis under the 5% significance level'%s*%(p_value>sig_lvl))
+  cat('\n     with p-value:', p_value)
+} else{warning('\nWARNING: manual and automatic p-value are not the same')
+  cat('\ndiff between p-value calculations:', diff_check)
+  cat('\np-value manual calc:', p_value_manual)
+  cat('\np-value auto   calc:', p_value)
+  }
+  
+}
 # setting up the table and helper variables.
 O <- as.table(rbind(c(688, 650),c(21, 59)))
 dimnames(O) <- list(smokers = c("Smokers", "Nonsmokers"), lung_cancer=c("Cancer", "Control"))
-#O
 
+# Manual Calculation of p-value
+alpha <- 0.05
 n<-sum(O)
 row_n <- rowSums(O)
 col_n <- colSums(O)
+E <- outer(row_n,col_n)/n # expected cell counts
+X2 <- sum((abs(O-E)-0.5)^2/E) # Yate's continuity correction
+df <- (nrow(O)-1)*(ncol(O)-1) # df=1 because we have 2x2 matrix
 
-#Expected cell Counts
+p_manual <- 1 - pchisq(X2,df = df)
 
-E <- outer(row_n,col_n)/n
 
-X2 <- sum((O-E)^2/E)
-df <- (nrow(O)-1)*(ncol(O)-1)
-p <- 1 - pchisq(X2,df = df)
-chisq.test(O)
+# using the chisq.test method
+p_auto <- chisq.test(O)$p.value
+diff = round(p_manual - p_auto, 8)
+
+report_results(diff_check=diff, p_value=p_auto, p_value_manual=p_manual, sig_lvl=alpha)
+
 ```
 
 ## e)
