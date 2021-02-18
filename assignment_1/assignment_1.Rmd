@@ -1,6 +1,6 @@
 ---
 title: "Assignment_1"
-author: "Ted Ladas"
+author: "Ted Ladas - s2124289"
 date: "1/30/2021"
 output:
   pdf_document: default
@@ -89,6 +89,9 @@ X_1^2 = &\frac{(|O_{11} - E_{11}| - 0.5)^2}{E_{11}} + \\
         &\frac{(|O_{22} - E_{22}| - 0.5)^2}{E_{22}} = 18.1357
 \end{align*}
 
+From tables we know that the critical value for $a=0.05$ is: $X_{critical}^2 = 3.841$, which is lower than our $X_1^2=18.1357$. Therefore, we conclude that we reject the Null hypothesis $H_0$, on the $5\%$ significance level.
+
+
 \newpage
 
 ## d)
@@ -137,5 +140,5 @@ report_results(diff_check=diff, p_value=p_auto, p_value_manual=p_manual, sig_lvl
 
 We have seen that from our test, we end up rejecting $H_0$ under the $5\%$ significance level. 
 That means that our variables of interest, smoking and Lung Cancer are **not** independent to one another. 
-Therefore, we can claim that there is a relationship between $X$ and $Y$. However. From the test alone, we cannot determine the directionality of the causation, whether $X$ causes $Y$ or $Y$ causes $X$. We cannot safely conclude that smoking causes cancer from the data alone.
+Therefore, we can claim that there is a relationship between $X$ and $Y$. However, from the test alone, we **cannot determine the directionality of the causation**, whether $X$ causes $Y$ or $Y$ causes $X$. We cannot safely conclude that smoking causes cancer from the data alone. If we take into consideration, all the past research on the topic, on the chemicals inside the cigarettes, and the fact that for most patients, smoking come before the fact that they develop cancerous cells, and other factors, we can conclude that smoking causes cancer. 
 
