@@ -1,0 +1,153 @@
+---
+title: "assignment_2"
+author: "Ted Ladas - s2124289"
+date: "18/02/2021"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(e1071)
+library(utils)
+library(stats)
+rm(list = ls())
+```
+
+**Question:** In an experiment, the following survival times (in minutes) of the peroneal nerves of four cats and ten rabbits were recorded under a certain condition.
+
+c = (25,33,43,45)
+
+r = (15,16,16,17,20,23,28,28,35,35)
+
+We want to do a permutation test based on sample means at $\alpha = 0.05$, to investigate whether these samples are from the same distribution, and use $\sum_{i=1}^4 c_i$ as the test statistic.
+
+- (a) Define your null and alternative hypotheses.
+
+We have $C, R$ random variable, with samples $c,r$ defined above.
+
+Suppose that $C \sim F(\lambda_1)$ and $R \sim F(\lambda_2)$, where $\lambda_1, \lambda_2$ are parameters and $F$ distribution.
+
+$H_0: \lambda_1 = \lambda_2$
+
+$H_1: \lambda_1 \not= \lambda_2$
+
+We will perform a permutation test to assess this hypothesis. We can do that since:
+
+\newpage
+
+- (b) Why can we use $\sum_{i=1}^4 c_i$ as the test statistic instead of $d=\bar{c} - \bar{r}$?
+
+We can use the $\sum_{i=1}^4 c_i$ as the test statistic instead of $d=\bar{c} - \bar{r}$, because in our case these two are exactly equivalent. 
+Since we are performing a *permutation test*, whether we measure how many times in each permutation the $\sum_{i=1}^4 c_i$ is bigger than our given $\sum_{i=1}^4 c_i$, or how many times $d$ is bigger than our observed $d$ is the same thing.
+\newpage
+
+- (c) Find the p-value and state clearly what you can conclude from the result of your test.
+
+These are the permutations for which, the $\sum_{i=1}^4 c_i$ is bigger or equal than the given sample.
+
+\begin{table}[!h]
+\begin{tabular}{|l|llll|l|}
+\hline
+    & x\_1        & x\_2        & x\_3        & x\_4        & TOTAL        \\ \hline
+Obs & \textbf{25} & \textbf{33} & \textbf{43} & \textbf{45} & \textbf{146} \\
+1   & 25          & 43          & 45          & 35          & 148          \\
+2   & 25          & 43          & 45          & 35          & 148          \\
+3   & 33          & 43          & 45          & 28          & 149          \\
+4   & 33          & 43          & 45          & 28          & 149          \\
+5   & 33          & 43          & 45          & 35          & 156          \\
+6   & 33          & 43          & 45          & 35          & 156          \\
+7   & 33          & 43          & 35          & 35          & 146          \\
+8   & 33          & 45          & 35          & 35          & 148          \\
+9   & 43          & 45          & 23          & 35          & 146          \\
+10  & 43          & 45          & 23          & 35          & 146          \\
+11  & 43          & 45          & 28          & 35          & 151          \\
+12  & 43          & 45          & 28          & 35          & 151          \\
+13  & 43          & 45          & 28          & 35          & 151          \\
+14  & 43          & 45          & 28          & 35          & 151          \\
+15  & 43          & 45          & 35          & 35          & 158          \\ \hline
+\end{tabular}
+\label{table:table1}
+\end{table}
+
+There are 4 values in $C$ and 14 possible value in total in $C$ and $R$, therefore the total number of cases where $\sum_{i=1}^4 c_i$ is smaller than the original is $1001$. Therefore the p-value for the one sided test is: $p = \frac{16}{1001} \approx  0.016$
+
+\newpage
+
+- (d) Define the test hypotheses.
+
+\newpage
+
+- (e) Find the observed value of the test statistic $U$ (without using ```R```).
+
+\newpage
+
+- (f) Use ```R``` to find the (approximate) p-value and compare the result with that of part (c) for $\alpha = 0.05$.
+
+```{r test}
+# helper
+m1 = 'The 2-sided p-value is:'
+reject_message = '\nTherefore we reject the Null Hypothesis'
+accept_message = '\nTherefore we do not have evidence to reject the Null Hypothesis'
+
+# data
+c = c(25,33,43,45)
+r = c(15,16,16,17,20,23,28,28,35,35)
+c_len = length(c)
+
+alpha = 0.05
+d = mean(c) - mean(r)
+z = c(c,r)
+z_len = length(z)
+ds = NULL
+P = combn(z_len, c_len)
+
+# calculate combinations
+for (b in 1:ncol(P)){
+  s = P[,b]
+  c_s = s
+  r_s = (1:z_len)[-s]
+  ds = c(ds, mean(z[r_s]) - mean(z[c_s]))
+}
+# calculate and print the p-value
+# pvalue_1_side = mean(ds >= d)
+pvalue_2_side = 2*min(mean(ds >= d), mean(ds <= d))
+if(pvalue_2_side<alpha) cat(m1, pvalue_2_side, reject_message) else cat(m1, pvalue_2_side, accept_message)
+
+wilcox.test(c,r, alternative = "two.sided")
+```
+
+```{r}
+# data
+c = c(25,33,43,45)
+r = c(15,16,16,17,20,23,28,28,35,35)
+c_len = length(c)
+
+alpha = 0.05
+d = mean(c) - mean(r)
+z = c(c,r)
+z_len = length(z)
+ds = NULL
+P = combn(z_len, c_len)
+
+list_2 = matrix(ncol=4)
+# calculate combinations
+for (b in 1:ncol(P)){
+  s = P[,b]
+  c_s = s
+  summation = sum(z[c_s])
+  summation
+  list_2 = rbind(list_2, z[c_s])
+  ds = c(ds, summation)
+}
+list_2 <- na.omit(list_2)
+list_2 = cbind(list_2, ds)
+colnames(list_2) <- c('x1','x2','x3','x4','sum')
+list_2
+test <- c(ds>=146)
+length(test)
+test
+list_2[test, c('x1','x2','x3','x4','sum')]
+```
