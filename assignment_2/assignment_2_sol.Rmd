@@ -34,7 +34,7 @@ $H_0: \lambda_1 = \lambda_2$
 
 $H_1: \lambda_1 \not= \lambda_2$
 
-We will perform a permutation test to assess this hypothesis. We can do that since:
+We will perform a permutation test to assess this hypothesis.
 
 \newpage
 
@@ -59,45 +59,106 @@ Obs & \textbf{25} & \textbf{33} & \textbf{43} & \textbf{45} & \textbf{146} \\
 4   & 33          & 43          & 45          & 28          & 149          \\
 5   & 33          & 43          & 45          & 35          & 156          \\
 6   & 33          & 43          & 45          & 35          & 156          \\
-7   & 33          & 43          & 35          & 35          & 146          \\
-8   & 33          & 45          & 35          & 35          & 148          \\
-9   & 43          & 45          & 23          & 35          & 146          \\
-10  & 43          & 45          & 23          & 35          & 146          \\
+7   & 33          & 45          & 35          & 35          & 148          \\
+8   & 43          & 45          & 28          & 35          & 151          \\
+9   & 43          & 45          & 28          & 35          & 151          \\
+10  & 43          & 45          & 28          & 35          & 151          \\
 11  & 43          & 45          & 28          & 35          & 151          \\
-12  & 43          & 45          & 28          & 35          & 151          \\
-13  & 43          & 45          & 28          & 35          & 151          \\
-14  & 43          & 45          & 28          & 35          & 151          \\
-15  & 43          & 45          & 35          & 35          & 158          \\ \hline
+12  & 43          & 45          & 35          & 35          & 158          \\ \hline
 \end{tabular}
 \label{table:table1}
 \end{table}
 
-There are 4 values in $C$ and 14 possible value in total in $C$ and $R$, therefore the total number of cases where $\sum_{i=1}^4 c_i$ is smaller than the original is $1001$. Therefore the p-value for the one sided test is: $p = \frac{16}{1001} \approx  0.016$
+There are 4 values in $C$ and 14 possible value in total in $C$ and $R$, therefore the total number of cases where $\sum_{i=1}^4 c_i$ is smaller than the original is $1001$. Therefore the p-value for the one sided test is: $p_0 = \frac{13}{1001} \approx  0.013$. The p-value for our two-sided test is: $p = 2*p_0 \approx 0.025$. Since $p < \alpha=0.05$, we can *reject* the Null Hypothesis. That mean that according to our permutation test, $C$ and $R$, *don't* come from the same distribution. 
 
 \newpage
 
+Now suppose instead we wish to carry out the Mann-Whitney U-test
+
 - (d) Define the test hypotheses.
+
+According to the notation introduced in question (a) the test hypothesis for the Mann-Whitney U-test is:
+$H_0: F_1 = F_2$
+
+$H_1: F_1 \not= F_2$
+
+We can carry out the Mann-Whitney U-test, since all it's assumptions are fulfilled. 
+
+_Assumptions:_
+
+- $C, R$ samples are independent. This is true because they represent different species. 
+- The data is at least ordinal. This is true because the data can take continuous values. 
 
 \newpage
 
 - (e) Find the observed value of the test statistic $U$ (without using ```R```).
 
+$U = \sum_{i=1}^4 \sum_{j=1}^{10} s(c_i, r_j)$, where 
+
+\[   
+s(c_i, r_j) = 
+     \begin{cases}
+       1,             &\quad c_i >    r_j\\
+       \frac{1}{2},   &\quad c_i =    r_j\\
+       0,             &\quad c_i \leq r_j\\
+     \end{cases}
+\]
+
+Therefore we rank our observations to get the $U$ score manually.
+
+\begin{table}[!h]
+\begin{tabular}{|l|llllllllllllll|}
+\hline
+DATA             & 15         & 16         & 16         & 17         & 20         & 23         & 25         & 28         & 28         & 33         & 35         & 35         & 43          & 45          \\
+Variable         & R          & R          & R          & R          & R          & R          & C          & R          & R          & C          & R          & R          & C           & C           \\ \hline
+\textbf{U-score} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{6} & \textbf{0} & \textbf{0} & \textbf{8} & \textbf{0} & \textbf{0} & \textbf{10} & \textbf{10} \\ \hline
+\end{tabular}
+\end{table}
+
+The final U score is the sum of the last row of the table: $\therefore U=34$
+
 \newpage
 
 - (f) Use ```R``` to find the (approximate) p-value and compare the result with that of part (c) for $\alpha = 0.05$.
 
-```{r test}
+
+```{r Hypothesis-test, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 # helper
-m1 = 'The 2-sided p-value is:'
+m1             = 'The 2-sided p-value is:'
 reject_message = '\nTherefore we reject the Null Hypothesis'
 accept_message = '\nTherefore we do not have evidence to reject the Null Hypothesis'
+alpha = 0.05
 
 # data
 c = c(25,33,43,45)
 r = c(15,16,16,17,20,23,28,28,35,35)
+mw_test = wilcox.test(c,r, alternative = "two.sided")
+
+if(mw_test$p.value<alpha){cat('\n', m1, mw_test$p.value, reject_message, '\n')
+}else{cat('\n', m1, mw_test$p.value, accept_message, '\n')}
+mw_test
+```
+
+**Comment on results:** 
+
+The results produced by ```R``` and the manual calculation are vastly different since in the first case we rejected the Null hypothesis and in the other we cannot reject it. An important point is the fact that the Mann-Whitney U-test produced an **approximate p-value**, due to the fact that there where ties on the data. That means that it based the p-value calculation on a *normal approximation*. The normal approximation cannot be very accurate in this circumstance, since we only have cumulatively $14$ data points. Therefore, we believe that the permutation test is more accurate under the given framework, with a conclusion that the times of survival of Cats and Rabbits come from a **different distribution**. As a second point the below Kernel Density Estimation plot of the data shows that there is a possibility both distribution are bi-modular, since they don't form a clear pick, strengthening the claim that the Normal approximation wouldn't be the correct tool to conclude this analysis. The normal approximation of a distribution is valid and a *good* approximation only around the mean value of the distribution, but we suspect that our distributions might have multiple picks. We avoided to draw this diagram before the start of the analysis, and we only explored it in the end, to have a conclusive answer, as to not influence ourselves in any way. 
+
+The code of the analysis can be found on github at: https://github.com/TedOiler/APS/tree/master/assignment_2.
+
+This is a **private** repository, that I will make public only after the submission deadline of the assessment. 
+
+```{r KDE, include=FALSE}
+plot(density(c), col='blue4', ylim=c(0,0.05), main='KDE of Cats and Rabbits')
+lines(density(r), col='red4')
+legend("topright",
+       c("Cats", "Rabbits"),
+       col=c('blue4', 'red4'),
+       lwd=2)
+```
+
+```{r, include=FALSE}
 c_len = length(c)
 
-alpha = 0.05
 d = mean(c) - mean(r)
 z = c(c,r)
 z_len = length(z)
@@ -116,10 +177,7 @@ for (b in 1:ncol(P)){
 pvalue_2_side = 2*min(mean(ds >= d), mean(ds <= d))
 if(pvalue_2_side<alpha) cat(m1, pvalue_2_side, reject_message) else cat(m1, pvalue_2_side, accept_message)
 
-wilcox.test(c,r, alternative = "two.sided")
-```
 
-```{r}
 # data
 c = c(25,33,43,45)
 r = c(15,16,16,17,20,23,28,28,35,35)
