@@ -147,7 +147,7 @@ The code of the analysis can be found on github at: https://github.com/TedOiler/
 
 This is a **private** repository, that I will make public only after the submission deadline of the assessment. 
 
-```{r KDE, include=FALSE}
+```{r KDE, echo=FALSE, message=FALSE, warning=FALSE}
 plot(density(c), col='blue4', ylim=c(0,0.05), main='KDE of Cats and Rabbits')
 lines(density(r), col='red4')
 legend("topright",
