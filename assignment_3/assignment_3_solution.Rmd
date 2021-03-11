@@ -32,7 +32,7 @@ $H_1: X, Y ~~ \text{don't have the same distribution}$
 
 The assumptions for this test are:
 
-1.   $X$ and $Y$ are independent -which is true since the are different patients.
+1.   $X$ and $Y$ are independent -which is true since they are different patients.
 2.  The observations are at least ordinal -which is true since the data are times, and therefore continuous ratio data.
 
 Our data have no ties in them, therefore the *p-value* calculated is exact and does not rely on a Normal approximation. Since the *p-value* of the test is $0.04507$, that means that we **reject** the null hypothesis on $\alpha = 5\%$ significance level. Therefore, the random variables **do not have** the same distribution.
@@ -67,10 +67,10 @@ pvalue.twosided <- 2*min(pvalue.right, pvalue.left)
 print('Randomization test approximate p-value:', pvalue.twosided)
 ```
 
-According to the two-sample randomization test based on the sample means, the *p-value* is $0.009$, and it was calculate for $1000$ iterations. This is significant on the $\alpha = 5\%$ significance level, which means that we **reject** the null hypothesis. Therefore the two random variables **do not have** the same mean.
+According to the two-sample randomization test based on the sample means, the *p-value* is $0.009$, and it was calculated for $1000$ iterations. This is significant on the $\alpha = 5\%$ significance level, which means that we **reject** the null hypothesis. Therefore the two random variables **do not have** the same mean.
 
 \newpage
 
 ## c) Will the *p-value* calculated in part (b) differ to one calculated by enumerating all permutations at least as extreme as the observed one? Explain your answer
 
-The *p-value* of the randomization test will be different from the one calculated by enumerating all the permutations. This is because all the permutations are `choose(n+m,n) = choose(13,8) = 1287` which is bigger than our `B=1000` . Therefore, some permutation are not checked on the randomization test. The final result though wouldn't be that different and since our *p-value* is much less than $5\%$, it makes sense to not explore the full permutation test.
+The *p-value* of the randomization test will be different from the one calculated by enumerating all the permutations. This is because all the permutations are `choose(n+m,n) = choose(13,8) = 1287` which is bigger than our `B=1000` . Therefore, some permutations are not checked on the randomization test. The final result though wouldn't be that different and since our *p-value* is much less than $5\%$, it makes sense to not explore the full permutation test.
