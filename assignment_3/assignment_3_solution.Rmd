@@ -1,0 +1,59 @@
+---
+title: "Assignment 3"
+author: "Ted Ladas - s2124289"
+date: "12/03/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Reaction times were recorded for 13 individuals under the influence of either drug A or drug B, giving the following data:
+
+-   Drug A: 2.07 1.71 2.24 1.62 2.11
+-   Drug B: 2.41 1.96 1.93 2.71 2.50 2.84 2.88 2.43
+
+## a)
+
+Use \textsf{R} to carry out a Mann-Whitney U-test on these data.
+
+```{r a}
+drug.a <- c(2.07, 1.71, 2.24, 1.62, 2.11)
+drug.b <- c(2.41, 1.96, 1.93, 2.71, 2.50, 2.84, 2.88, 2.43)
+
+wilcox.test(drug.a, drug.b, alternative='two.sided', exact=TRUE)
+```
+
+Suppose $drug.a$ is a random sample from the random variable $X$, while $drug.b$ is a random sample from the random variable $Y$.
+
+$H_0: X, Y ~~ \text{have the same distribution}$
+
+$H_1: X, Y ~~ \text{don't have the same distribution}$
+
+The assumptions for this test are:
+
+1.   $X$ and $Y$ are independent -which is true since the are different patients.
+2.  The observations are at least ordinal -which is true since the data are times, and therefore continuous ratio data.
+
+Our data have no ties in them, therefore the p-value calculated is exact and does 't rely on a Normal approximation. Since the p-value of the test is $0.04507$ the results are not significant on an $\alpha = 5\%$ level. Therefore we **reject** the null hypothesis.
+
+\newpage
+
+## b)
+
+Use \textsf{R} to carry out a two-sample randomisation test, based on sample means, to assess whether the effects of the two drugs differ, and state your conclusions.
+
+```{r b}
+
+```
+
+\newpage
+
+## c)
+
+Will the *p-value* calculated in part (b) differ to one calculated by enumerating all permutations at least as extreme as the observed one? Explain your answer.
+
+```{r c}
+
+```
