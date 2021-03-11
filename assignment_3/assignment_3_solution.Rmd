@@ -36,7 +36,7 @@ The assumptions for this test are:
 1.   $X$ and $Y$ are independent -which is true since the are different patients.
 2.  The observations are at least ordinal -which is true since the data are times, and therefore continuous ratio data.
 
-Our data have no ties in them, therefore the p-value calculated is exact and does 't rely on a Normal approximation. Since the p-value of the test is $0.04507$ the results are not significant on an $\alpha = 5\%$ level. Therefore we **reject** the null hypothesis.
+Our data have no ties in them, therefore the p-value calculated is exact and does not rely on a Normal approximation. Since the p-value of the test is $0.04507$, that means that we **reject** the null hypothesis on $\alpha = 5\%$ significance level. Therefore, the random variables **do not have** the same distribution.
 
 \newpage
 
@@ -45,15 +45,35 @@ Our data have no ties in them, therefore the p-value calculated is exact and doe
 Use \textsf{R} to carry out a two-sample randomisation test, based on sample means, to assess whether the effects of the two drugs differ, and state your conclusions.
 
 ```{r b}
+set.seed(1903)
+n <- length(drug.a)
+m <- length(drug.b)
+z <- c(drug.a, drug.b)
+T.obs <- mean(drug.a) - mean(drug.b)
+B <- 1e3
+T.s <- NULL
 
+for(b in 1:B){
+  s <- sample(1:(n+m), n, replace=FALSE)
+  T.sample <- mean(z[s]) - mean(z[-s])
+  T.s <- c(T.s, T.sample)
+}
+
+T.s <- c(T.s, T.obs)
+hist(T.s)
+abline(v=mean(T.obs), col='red4')
+
+pvalue.right <- mean(T.s >= T.obs)
+pvalue.left <- mean(T.s <= T.obs)
+
+pvalue.twosided <- 2*min(pvalue.right, pvalue.left)
+cat('Randomization test approximate p-value:', pvalue.twosided)
 ```
+
+According to the two-sample randomization test based on the sample means, the pvalue is $0.009$, and it was calculate for $1000$ iterations. This is significant on the $\alpha = 5\%$ significance level, which means that we **reject** the null hypothesis. Therefore the two random variables **do not have** the same mean.
 
 \newpage
 
 ## c)
 
-Will the *p-value* calculated in part (b) differ to one calculated by enumerating all permutations at least as extreme as the observed one? Explain your answer.
-
-```{r c}
-
-```
+Will the *p-value* calculated in part (b) differ to one calculated by enumerating all permutations at least as extreme as the observed one? Explain your answer
